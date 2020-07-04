@@ -312,7 +312,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
            // 衝突の時に動かないように設定する
             middle.physicsBody?.isDynamic = false// ←追加
             
+            item.addChild(middle)
+
+            // アイテムスコアアップ用のノード
+
+            let itemScoreNode = SKNode()
+
+            itemScoreNode.position = CGPoint(x: middle.size.width + birdSize.width / 2, y: self.frame.height / 2)
+
+            itemScoreNode.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: middle.size.width, height: self.frame.size.height))
+
+            itemScoreNode.physicsBody?.isDynamic = false
+
+            itemScoreNode.physicsBody?.categoryBitMask = self.itemCategory
+
+            itemScoreNode.physicsBody?.contactTestBitMask = self.birdCategory
+
+
+
+            item.addChild(itemScoreNode)
+
+            // --- ここまで追加 ---
+            
             item.run(itemAnimation)
+            
+            
 
             self.itemNode.addChild(item)
         })
