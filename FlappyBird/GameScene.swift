@@ -288,7 +288,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // 下の壁のY軸下限位置(中央位置から下方向の最大振れ幅で下の壁を表示する位置)を計算
         let groundSize = SKTexture(imageNamed: "ground").size()
         let center_y = groundSize.height + (self.frame.size.height - groundSize.height) / 2
-        let under_item_lowest_y = center_y - slit_length / 2 - itemTexture.size().height / 2 - random_y_range / 2
+        let middle_item_lowest_y = center_y - slit_length / 2 - itemTexture.size().height / 2 - random_y_range / 2
 
         // 壁を生成するアクションを作成
         let createItemAnimation = SKAction.run({
@@ -300,46 +300,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // 0〜random_y_rangeまでのランダム値を生成
             let random_y = CGFloat.random(in: 0..<random_y_range)
             // Y軸の下限にランダムな値を足して、下の壁のY座標を決定
-            let under_item_y = under_item_lowest_y + random_y
+            let middle_item_y = middle_item_lowest_y + random_y
 
             // 下側の壁を作成
-            let under = SKSpriteNode(texture: itemTexture)
-            under.position = CGPoint(x: 0, y: under_item_y)
+            let middle = SKSpriteNode(texture: itemTexture)
+            middle.position = CGPoint(x: 0, y: middle_item_y)
             
             // スプライトに物理演算を設定する
-            under.physicsBody = SKPhysicsBody(rectangleOf: itemTexture.size())    // ←追加
-            under.physicsBody?.categoryBitMask = self.itemCategory    // ←追加
+            middle.physicsBody = SKPhysicsBody(rectangleOf: itemTexture.size())    // ←追加
+            middle.physicsBody?.categoryBitMask = self.itemCategory    // ←追加
 
 
             // 衝突の時に動かないように設定する
-            under.physicsBody?.isDynamic = false    // ←追加
+            middle.physicsBody?.isDynamic = false// ←追加
 
-            item.addChild(under)
-
-            // 上側の壁を作成
-            let upper = SKSpriteNode(texture: itemTexture)
-            upper.position = CGPoint(x: 0, y: under_item_y + itemTexture.size().height + slit_length)
+            item.addChild(middle)
             
-            // スプライトに物理演算を設定する
-            upper.physicsBody = SKPhysicsBody(rectangleOf: itemTexture.size())    // ←追加
-            upper.physicsBody?.categoryBitMask = self.itemCategory    // ←追加
-            
-            // 衝突の時に動かないように設定する
-            upper.physicsBody?.isDynamic = false
-
-            item.addChild(upper)
-
-            // スコアアップ用のノード --- ここから ---
-            let itemScoreNode = SKNode()
-            itemScoreNode.position = CGPoint(x: upper.size.width + birdSize.width / 2, y: self.frame.height / 2)
-            itemScoreNode.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: upper.size.width, height: self.frame.size.height))
-            itemScoreNode.physicsBody?.isDynamic = false
-            itemScoreNode.physicsBody?.categoryBitMask = self.scoreCategory
-            itemScoreNode.physicsBody?.contactTestBitMask = self.birdCategory
-
-            item.addChild(itemScoreNode)
-            // --- ここまで追加 ---
-
             item.run(itemAnimation)
 
             self.itemNode.addChild(item)
@@ -382,9 +358,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bird.physicsBody?.allowsRotation = false    // ←追加
 
         // 衝突のカテゴリー設定
-        bird.physicsBody?.categoryBitMask = birdCategory    // ←追加
-        bird.physicsBody?.collisionBitMask = groundCategory | wallCategory    // ←追加
-        bird.physicsBody?.contactTestBitMask = groundCategory | wallCategory    // ←追加
+        bird.physicsBody?.categoryBitMask = birdCategory   // ←追加
+        bird.physicsBody?.collisionBitMask = groundCategory | wallCategory   // ←追加
+        bird.physicsBody?.contactTestBitMask = groundCategory | wallCategory | itemCategory// ←追加
 
 
 
@@ -449,6 +425,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // ゲームオーバーのときは何もしない
         if scrollNode.speed <= 0 {
             return
+        }
+        if (contact.bodyA.categoryBitMask & itemCategory) == itemCategory || (contact.bodyB.categoryBitMask & itemCategory) == itemCategory {
+            
+            SKAction.removeFromParent()//item削除用にカスタマイズしたい
+        // スコア用の物体と衝突した
+        print("itemScoreUp")
+        itemScore += 1
+        itemScoreLabelNode.text = "Item Score:\(itemScore)"
+            
         }
 
         if (contact.bodyA.categoryBitMask & scoreCategory) == scoreCategory || (contact.bodyB.categoryBitMask & scoreCategory) == scoreCategory {
