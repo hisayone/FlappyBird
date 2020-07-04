@@ -289,6 +289,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let groundSize = SKTexture(imageNamed: "ground").size()
         let center_y = groundSize.height + (self.frame.size.height - groundSize.height) / 2
         let middle_item_lowest_y = center_y - slit_length / 2 - itemTexture.size().height / 2 - random_y_range / 2
+        
 
         // 壁を生成するアクションを作成
         let createItemAnimation = SKAction.run({
@@ -301,20 +302,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let random_y = CGFloat.random(in: 0..<random_y_range)
             // Y軸の下限にランダムな値を足して、下の壁のY座標を決定
             let middle_item_y = middle_item_lowest_y + random_y
-
             // 下側の壁を作成
             let middle = SKSpriteNode(texture: itemTexture)
             middle.position = CGPoint(x: 0, y: middle_item_y)
-            
             // スプライトに物理演算を設定する
-            middle.physicsBody = SKPhysicsBody(rectangleOf: itemTexture.size())    // ←追加
-            middle.physicsBody?.categoryBitMask = self.itemCategory    // ←追加
+            middle.physicsBody = SKPhysicsBody(rectangleOf: itemTexture.size())// ←追加
+            middle.physicsBody?.categoryBitMask = self.itemCategory// ←追加
 
-
-            // 衝突の時に動かないように設定する
+           // 衝突の時に動かないように設定する
             middle.physicsBody?.isDynamic = false// ←追加
-
-            item.addChild(middle)
             
             item.run(itemAnimation)
 
