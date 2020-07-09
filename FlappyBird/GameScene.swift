@@ -266,7 +266,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let movingDistance = CGFloat(self.frame.size.width + itemTexture.size().width)
 
         // 画面外まで移動するアクションを作成
-        let moveItem = SKAction.moveBy(x: -movingDistance, y: 0, duration:4)
+        let moveItem = SKAction.moveBy(x: -movingDistance-100, y: 0, duration:5)
 
         // 自身を取り除くアクションを作成
         let removeItem = SKAction.removeFromParent()
@@ -304,7 +304,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let middle_item_y = middle_item_lowest_y + random_y
             // 下側の壁を作成
             let middle = SKSpriteNode(texture: itemTexture)
-            middle.position = CGPoint(x: 0, y: middle_item_y)
+            middle.position = CGPoint(x: 100, y: middle_item_y)
             // スプライトに物理演算を設定する
             middle.physicsBody = SKPhysicsBody(rectangleOf: itemTexture.size())// ←追加
             middle.physicsBody?.categoryBitMask = self.itemCategory// ←追加
