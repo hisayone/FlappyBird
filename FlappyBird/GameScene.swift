@@ -314,25 +314,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             item.addChild(middle)
 
-            // アイテムスコアアップ用のノード
 
-            let itemScoreNode = SKNode()
-
-            itemScoreNode.position = CGPoint(x: middle.size.width + birdSize.width / 2, y: self.frame.height / 2)
-
-            itemScoreNode.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: middle.size.width, height: self.frame.size.height))
-
-            itemScoreNode.physicsBody?.isDynamic = false
-
-            itemScoreNode.physicsBody?.categoryBitMask = self.itemCategory
-
-            itemScoreNode.physicsBody?.contactTestBitMask = self.birdCategory
-
-
-
-            item.addChild(itemScoreNode)
-
-            // --- ここまで追加 ---
             
             item.run(itemAnimation)
             
@@ -448,7 +430,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         if (contact.bodyA.categoryBitMask & itemCategory) == itemCategory || (contact.bodyB.categoryBitMask & itemCategory) == itemCategory {
             
-            SKAction.removeFromParent()//item削除用にカスタマイズしたい
+            contact.bodyA.node?.removeFromParent()//item削除用にカスタマイズしたい
         // スコア用の物体と衝突した
         print("itemScoreUp")
         itemScore += 1
@@ -456,7 +438,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         }
 
-        if (contact.bodyA.categoryBitMask & scoreCategory) == scoreCategory || (contact.bodyB.categoryBitMask & scoreCategory) == scoreCategory {
+        else if (contact.bodyA.categoryBitMask & scoreCategory) == scoreCategory || (contact.bodyB.categoryBitMask & scoreCategory) == scoreCategory {
             // スコア用の物体と衝突した
             
             print("ScoreUp")
