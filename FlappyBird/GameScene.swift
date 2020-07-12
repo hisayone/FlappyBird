@@ -32,7 +32,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let userDefaults:UserDefaults = UserDefaults.standard    // 追加
 
-    let audioNode = SKAudioNode(fileNamed: "sound.mp3")
+    let sound = SKAction.playSoundFileNamed("sound.mp3", waitForCompletion: false)
     //ゲーム画面（＝SKSceneクラスを継承したクラス）が表示されるときに呼ばれるメソッドがdidMove(to:)メソッドになります。このメソッドで画面を構築する処理を書いたり、ゲームの初期設定を行います。
     // SKView上にシーンが表示されたときに呼ばれるメソッド
     override func didMove(to view: SKView) {
@@ -56,7 +56,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         itemNode = SKNode()
         scrollNode.addChild(itemNode)
         
-        addChild(audioNode)
 
         // 各種スプライトを生成する処理をメソッドに分割
         setupGround()
@@ -438,9 +437,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         itemScore += 1
         itemScoreLabelNode.text = "Item Score:\(itemScore)"
         //効果音
-        let playAction = SKAction.play()
-        audioNode.run(playAction)
-            
+        
+        run(sound)
+        print("sound")
         }
 
         else if (contact.bodyA.categoryBitMask & scoreCategory) == scoreCategory || (contact.bodyB.categoryBitMask & scoreCategory) == scoreCategory {
