@@ -32,7 +32,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let userDefaults:UserDefaults = UserDefaults.standard    // 追加
 
-    
+    let audioNode = SKAudioNode(fileNamed: "sound.mp3")
     //ゲーム画面（＝SKSceneクラスを継承したクラス）が表示されるときに呼ばれるメソッドがdidMove(to:)メソッドになります。このメソッドで画面を構築する処理を書いたり、ゲームの初期設定を行います。
     // SKView上にシーンが表示されたときに呼ばれるメソッド
     override func didMove(to view: SKView) {
@@ -55,6 +55,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         itemNode = SKNode()
         scrollNode.addChild(itemNode)
+        
+        addChild(audioNode)
 
         // 各種スプライトを生成する処理をメソッドに分割
         setupGround()
@@ -259,14 +261,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func setupItem(){
         // itemの画像を読み込む
-        let itemTexture = SKTexture(imageNamed: "item")
+        let itemTexture = SKTexture(imageNamed: "itek")
         itemTexture.filteringMode = .linear
 
         // 移動する距離を計算
         let movingDistance = CGFloat(self.frame.size.width + itemTexture.size().width)
 
         // 画面外まで移動するアクションを作成
-        let moveItem = SKAction.moveBy(x: -movingDistance-100, y: 0, duration:5)
+        let moveItem = SKAction.moveBy(x: -movingDistance-100, y: 0, duration:TimeInterval(4 + 400/movingDistance))
 
         // 自身を取り除くアクションを作成
         let removeItem = SKAction.removeFromParent()
@@ -435,6 +437,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("itemScoreUp")
         itemScore += 1
         itemScoreLabelNode.text = "Item Score:\(itemScore)"
+        //効果音
+        let playAction = SKAction.play()
+        audioNode.run(playAction)
             
         }
 
